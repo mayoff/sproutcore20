@@ -33,7 +33,15 @@ NO = false;
 // ensure no undefined errors in browsers where console doesn't exist
 if (typeof console === 'undefined') {
   window.console = {};
-  console.log = console.info = console.warn = console.error = function() {};
+  var noop = function() {};
+  /** @private */
+  console.log = noop;
+  /** @private */
+  console.info = noop;
+  /** @private */
+  console.warn = noop;
+  /** @private */
+  console.error = noop;
 }
 //@endif
 
