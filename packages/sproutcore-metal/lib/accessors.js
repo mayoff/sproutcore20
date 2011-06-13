@@ -10,10 +10,20 @@ require('sproutcore-metal/platform');
 require('sproutcore-metal/utils');
 
 var USE_ACCESSORS = SC.platform.hasPropertyAccessors && SC.ENV.USE_ACCESSORS;
+var TUPLE_RET = [];
+var IS_GLOBAL = /^([A-Z$]|([0-9][A-Z$])).*[\.\*]/;
+var IS_GLOBAL_SET = /^([A-Z$]|([0-9][A-Z$])).*[\.\*]?/;
+var HAS_THIS  = /^this[\.\*]/;
+var FIRST_KEY = /^([^\.\*]+)/;
+
+var get;
+var meta = SC.meta;
+var o_get;
+var o_set;
+var set;
+
 
 SC.USE_ACCESSORS = !!USE_ACCESSORS;
-
-var meta = SC.meta;
 
 
 // ..........................................................
@@ -23,8 +33,6 @@ var meta = SC.meta;
 // If we are on a platform that supports accessors we can get use those.
 // Otherwise simulate accessors by looking up the property directly on the
 // object.
-
-var get, set;
 
 /** @private */
 get = function get(obj, keyName) {
@@ -61,7 +69,8 @@ set = function set(obj, keyName, value) {
 };
 
 if (!USE_ACCESSORS) {
-  var o_get = get, o_set = set;
+  o_get = get;
+  o_set = set;
 
   /** @private */
   get = function(obj, keyName) {
@@ -84,7 +93,6 @@ if (!USE_ACCESSORS) {
     else { o_set(obj, keyName, value); }
     return value;
   };
-
 }
 
 /**
@@ -165,12 +173,6 @@ function normalizePath(path) {
   return path;
 }
 
-var TUPLE_RET = [];
-var IS_GLOBAL = /^([A-Z$]|([0-9][A-Z$])).*[\.\*]/;
-var IS_GLOBAL_SET = /^([A-Z$]|([0-9][A-Z$])).*[\.\*]?/;
-var HAS_THIS  = /^this[\.\*]/;
-var FIRST_KEY = /^([^\.\*]+)/;
-
 /** @private */
 function firstKey(path) {
   return path.match(FIRST_KEY)[0];
@@ -212,7 +214,7 @@ function getPath(target, path) {
 function normalizeTuple(target, path) {
   var hasThis = HAS_THIS.test(path),
       isGlobal = !hasThis && IS_GLOBAL.test(path),
-      key;
+      key, idx;
 
   if (!target || isGlobal) { target = window; }
   if (hasThis) { path = path.slice(5); }
@@ -236,7 +238,7 @@ function normalizeTuple(target, path) {
 
   // must return some kind of path to be valid else other things will break.
   if (!path || path.length === 0) { throw new Error('Invalid Path'); }
-  
+
   TUPLE_RET[0] = target;
   TUPLE_RET[1] = path;
   return TUPLE_RET;
@@ -288,7 +290,7 @@ SC.normalizeTuple.primitive = normalizeTuple;
 */
 SC.getPath = function(root, path) {
   var hasThis, hasStar, isGlobal;
-  
+
   if (!path && typeof root === 'string') {
     path = root;
     root = null;
@@ -305,12 +307,7 @@ SC.getPath = function(root, path) {
   path = normalizePath(path);
   hasThis = HAS_THIS.test(path);
   isGlobal = !hasThis && IS_GLOBAL.test(path);
-<<<<<<< HEAD
   if (!root || hasThis || isGlobal || hasStar) {
-=======
-
-  if (!root || hasThis || isGlobal || path.indexOf('*') > 0) {
->>>>>>> e8ccf81... Fixing up of some docs, mostly in Metal
     var tuple = normalizeTuple(root, path);
     root = tuple[0];
     path = tuple[1];
@@ -319,9 +316,6 @@ SC.getPath = function(root, path) {
   return getPath(root, path);
 };
 
-<<<<<<< HEAD
-SC.setPath = function(root, path, value, tolerant) {
-=======
 /**
   Sets the value of the property at the end of the path, using
   SC.set() as necessary.
@@ -335,12 +329,15 @@ SC.setPath = function(root, path, value, tolerant) {
   @param {Object} value
     The value to set the property to
 
+  @param {Boolean} tolerant
+    If false, will throw an expection if any object along the path does not exist.
+    Defaults to false.
+
   @returns The value
 */
-SC.setPath = function(root, path, value) {
->>>>>>> e8ccf81... Fixing up of some docs, mostly in Metal
+SC.setPath = function(root, path, value, tolerant) {
   var keyName;
-  
+
   if (arguments.length === 2 && typeof root === 'string') {
     value = path;
     path = root;
@@ -373,7 +370,6 @@ SC.setPath = function(root, path, value) {
     throw new Error('Invalid Path');
   }
 
-<<<<<<< HEAD
   if (!root) {
     if (tolerant) { return; }
     else { throw new Error('Object in path '+path+' could not be found or was destroyed.'); }
@@ -388,6 +384,8 @@ SC.setPath = function(root, path, value) {
 
   This is primarily used when syncing bindings, which may try to update after
   an object has been destroyed.
+
+  @see SC.setPath
 */
 SC.trySetPath = function(root, path, value) {
   if (arguments.length===2 && 'string' === typeof root) {
@@ -398,8 +396,3 @@ SC.trySetPath = function(root, path, value) {
 
   return SC.setPath(root, path, value, true);
 };
-
-=======
-  return SC.set(root, keyName, value);
-};
->>>>>>> e8ccf81... Fixing up of some docs, mostly in Metal
