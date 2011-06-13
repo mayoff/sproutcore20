@@ -11,11 +11,15 @@ require('sproutcore-metal/core');
   @class
 
   Platform specific methods and feature detectors needed by the framework.
+
+  @name SC.platform
 */
 var platform = SC.platform = {} ;
 
 /**
-  Identical to Object.create().  Implements if not available natively.
+  Identical to Object.create(). Implements if not available natively.
+
+  @function
 */
 platform.create = Object.create;
 
@@ -32,7 +36,7 @@ if (!platform.create) {
 
     if (descs !== undefined) {
       for(var key in descs) {
-        if (!descs.hasOwnProperty(key)) continue;
+        if (!descs.hasOwnProperty(key)) { continue; }
         platform.defineProperty(obj, key, descs[key]);
       }
     }
@@ -113,7 +117,7 @@ if (defineProperty) {
 }
 
 /**
-  Identical to Object.defineProperty().  Implements as much functionality
+  Identical to Object.defineProperty(). Implements as much functionality
   as possible if not available natively.
 
   @param {Object} obj The object to modify
