@@ -16,8 +16,12 @@ require('sproutcore-runtime/system/object');
 
 var slice = Array.prototype.slice;
 
-// invokes passed params - normalizing so you can pass target/func,
-// target/string or just func
+/**
+  @private
+
+  Invokes passed params - normalizing so you can pass target/func,
+  target/string or just func
+*/
 function invoke(target, method, args, ignore) {
 
   if (method===undefined) {
@@ -147,6 +151,7 @@ SC.RunLoop = RunLoop;
 // SC.run - this is ideally the only public API the dev sees
 //
 
+/** @private */
 var run;
 
 /**
@@ -248,6 +253,7 @@ SC.run.schedule = function(queue, target, method) {
 
 var autorunTimer;
 
+/** @private */
 function autorun() {
   autorunTimer = null;
   if (run.currentRunLoop) run.end();
@@ -299,6 +305,8 @@ SC.run.sync = function() {
 var timers = {}; // active timers...
 
 var laterScheduled = false;
+
+/** @private */
 function invokeLaterTimers() {
   var now = (+ new Date()), earliest = -1;
   for(var key in timers) {
@@ -366,6 +374,7 @@ SC.run.later = function(target, method) {
   return guid;
 };
 
+/** @private */
 function invokeOnceTimer(guid, onceTimers) {
   if (onceTimers[this.tguid]) delete onceTimers[this.tguid][this.mguid];
   if (timers[guid]) invoke(this.target, this.method, this.args, 2);
@@ -422,6 +431,8 @@ SC.run.once = function(target, method) {
 };
 
 var scheduledNext = false;
+
+/** @private */
 function invokeNextTimers() {
   scheduledNext = null;
   for(var key in timers) {

@@ -173,11 +173,13 @@ var WATCHED_DESC = {
   set: SC.Descriptor.MUST_USE_SETTER
 };
 
+/** @private */
 function w_get(obj, keyName) {
   var m = meta(obj, false);
   return m.values ? m.values[keyName] : undefined;
 }
 
+/** @private */
 function w_set(obj, keyName, value) {
   var m = meta(obj), watching;
   
@@ -189,6 +191,8 @@ function w_set(obj, keyName, value) {
 }
 
 var WATCHED_GETTERS = {};
+
+/** @private */
 function mkWatchedGetter(keyName) {
   var ret = WATCHED_GETTERS[keyName];
   if (!ret) {
@@ -200,6 +204,8 @@ function mkWatchedGetter(keyName) {
 }
 
 var WATCHED_SETTERS = {};
+
+/** @private */
 function mkWatchedSetter(keyName) {
   var ret = WATCHED_SETTERS[keyName];
   if (!ret) {
@@ -286,6 +292,7 @@ SIMPLE_PROPERTY.watched   = WATCHED_PROPERTY.watched   = WATCHED_PROPERTY;
 // DEFINING PROPERTIES API
 // 
 
+/** @private */
 function hasDesc(descs, keyName) {
   if (keyName === 'toString') return 'function' !== typeof descs.toString;
   else return !!descs[keyName];

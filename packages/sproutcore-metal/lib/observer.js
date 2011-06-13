@@ -52,9 +52,9 @@ ObserverSet.prototype.forEach = function(fn) {
 
 var queue = new ObserverSet(true), beforeObserverSet = new ObserverSet();
 
+/** @private */
 function notifyObservers(obj, eventName, forceNotification) {
   if (suspended && !forceNotification) {
-
     // if suspended add to the queue to send event later - but only send 
     // event once.
     if (!queue.contains(obj, eventName)) {
@@ -66,6 +66,7 @@ function notifyObservers(obj, eventName, forceNotification) {
   }
 }
 
+/** @private */
 function flushObserverQueue() {
   beforeObserverSet.empty();
 
@@ -83,28 +84,34 @@ SC.endPropertyChanges = function() {
   if (suspended<=0) flushObserverQueue();
 };
 
+/** @private */
 function changeEvent(keyName) {
   return keyName+AFTER_OBSERVERS;
 }
 
+/** @private */
 function beforeEvent(keyName) {
   return keyName+BEFORE_OBSERVERS;
 }
 
+/** @private */
 function changeKey(eventName) {
   return eventName.slice(0, -7);
 }
 
+/** @private */
 function beforeKey(eventName) {
   return eventName.slice(0, -7);
 }
 
+/** @private */
 function xformChange(target, method, params) {
   var obj = params[0], keyName = changeKey(params[1]), val;
   if (method.length>2) val = SC.getPath(obj, keyName);
   method.call(target, obj, keyName, val);
 }
 
+/** @private */
 function xformBefore(target, method, params) {
   var obj = params[0], keyName = beforeKey(params[1]), val;
   if (method.length>2) val = SC.getPath(obj, keyName);
