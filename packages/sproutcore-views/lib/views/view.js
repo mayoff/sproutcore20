@@ -13,13 +13,25 @@ var getPath = SC.getPath, meta = SC.meta, fmt = SC.String.fmt;
 var destroyedError = "You can't call %@ on a destroyed view";
 
 /**
-  @static
-
   Global hash of shared templates. This will automatically be populated
   by the build tools so that you can store your Handlebars templates in
   separate files that get loaded into JavaScript at buildtime.
 
+  ## Examples
+
+  If you want to load your templates into SC.TEMPLATES by hand:
+
+      #js:
+      SC.TEMPLATES['template_name'] = SC.Handlebars.compile('<span>your template</span>');
+
+      // later
+      var view = SC.View.create({
+        templateName: 'template_name'
+      });
+
+  @static
   @type Hash
+  @see SC.View
 */
 SC.TEMPLATES = {};
 
