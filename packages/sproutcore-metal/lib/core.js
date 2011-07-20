@@ -112,5 +112,7 @@ var sc_assert = function sc_assert(desc, test) {
   if (!test) { throw new Error("assertion failed: " + desc); }
 };
 
+window.sc_assert = sc_assert;
+
 //if ('undefined' === typeof sc_require) sc_require = SC.K;
 if ('undefined' === typeof require) require = SC.K;
